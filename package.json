@@ -1,0 +1,13 @@
+{
+  "name": "fingerprint-requester",
+  "version": "1.0.0",
+  "description": "TLS fingerprint HTTP requester with axios-like API",
+  "type": "module",
+  "main": "requester.js",
+  "scripts": {
+    "test": "node test_requester.js"
+  },
+  "keywords": ["tls", "fingerprint", "http", "request"],
+  "author": "",
+  "license": "MIT"
+}

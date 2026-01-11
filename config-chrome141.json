@@ -1,0 +1,131 @@
+{
+  "timeout": {
+    "connect": 30,
+    "read": 60
+  },
+  "proxy": {
+    "enabled": false,
+    "type": "http",
+    "url": "http://127.0.0.1:7890"
+  },
+  "fingerprint": {
+    "tls_version_min": "0x0303",
+    "tls_version_max": "0x0304",
+    "http2": true,
+    "grease": true,
+    "ciphers": [
+      "TLS_AES_128_GCM_SHA256",
+      "TLS_AES_256_GCM_SHA384",
+      "TLS_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_RSA_WITH_AES_256_CBC_SHA"
+    ],
+    "compression_methods": [0],
+    "extensions": [
+      {
+        "name": "server_name"
+      },
+      {
+        "name": "compress_certificate",
+        "data": {
+          "algorithms": [2]
+        }
+      },
+      {
+        "name": "renegotiation_info"
+      },
+      {
+        "name": "application_layer_protocol_negotiation",
+        "data": {
+          "protocols": ["h2", "http/1.1"]
+        }
+      },
+      {
+        "name": "extended_master_secret"
+      },
+      {
+        "name": "application_settings",
+        "data": {
+          "protocols": ["h2"]
+        }
+      },
+      {
+        "name": "signature_algorithms",
+        "data": {
+          "algorithms": [
+            "ecdsa_secp256r1_sha256",
+            "rsa_pss_rsae_sha256",
+            "rsa_pkcs1_sha256",
+            "ecdsa_secp384r1_sha384",
+            "rsa_pss_rsae_sha384",
+            "rsa_pkcs1_sha384",
+            "rsa_pss_rsae_sha512",
+            "rsa_pkcs1_sha512"
+          ]
+        }
+      },
+      {
+        "name": "psk_key_exchange_modes",
+        "data": {
+          "modes": [1]
+        }
+      },
+      {
+        "name": "key_share",
+        "data": {
+          "groups": ["X25519MLKEM768", "X25519"]
+        }
+      },
+      {
+        "name": "status_request"
+      },
+      {
+        "name": "session_ticket"
+      },
+      {
+        "name": "supported_groups",
+        "data": {
+          "curves": ["X25519MLKEM768", "X25519", "CurveP256", "CurveP384"]
+        }
+      },
+      {
+        "name": "ec_point_formats",
+        "data": {
+          "formats": [0]
+        }
+      },
+      {
+        "name": "signed_certificate_timestamp"
+      },
+      {
+        "name": "supported_versions",
+        "data": {
+          "versions": ["0x0304", "0x0303"]
+        }
+      },
+      {
+        "name": "encrypted_client_hello",
+        "data": {
+          "payload_lengths": [128, 160, 192, 224]
+        }
+      },
+      {
+        "name": "pre_shared_key",
+        "data": {
+          "identity_length": 192,
+          "binder_length": 32
+        }
+      }
+    ]
+  }
+}
