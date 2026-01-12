@@ -1,10 +1,12 @@
-import { create } from './requester.js';
+import { create } from '../requester.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Create requester instance
 const requester = create({
-  // binDir: './bin',  // default
-  // binaryPath: './bin/custom_binary',  // manual override
-  configPath: './config.json',  // default
+  configPath: join(__dirname, '../config-chrome141.json'),
   timeout: 30000,
 });
 

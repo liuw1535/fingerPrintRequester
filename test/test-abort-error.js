@@ -1,7 +1,11 @@
-import { create } from './requester.js';
+import { create } from '../requester.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const requester = create({
-  configPath: './config.json',
+  configPath: join(__dirname, '../config-chrome141.json'),
   timeout: 60000,
 });
 

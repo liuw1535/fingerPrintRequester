@@ -2,12 +2,54 @@
 
 基于 Go utls 库的 TLS 指纹请求器，支持自定义 TLS 指纹、GREASE、代理和流式传输。
 
+## 项目结构
+
+```
+fingerPrintRequester/
+├── cmd/tlsRequester/          # 程序入口
+├── internal/
+│   ├── config/                # 配置管理
+│   ├── fingerprint/           # TLS 指纹构建
+│   ├── requester/             # HTTP 请求处理
+│   └── utils/                 # 工具函数
+├── bin/                       # 编译产物
+└── config.json                # 配置文件
+```
+
 ## 编译
 
+### 快速编译（当前平台）
+
 ```bash
-go mod tidy
-go build -o tlsRequester.exe
+go build -o bin/tlsRequester.exe ./cmd/tlsRequester
 ```
+
+### 多平台编译（一键构建）
+
+**Windows:**
+```bash
+build.bat
+```
+
+**Linux/macOS:**
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+编译产物将生成在 `bin/` 目录：
+- `fingerprint_windows_amd64.exe` - Windows 64位
+- `fingerprint_linux_amd64` - Linux 64位
+- `fingerprint_android_arm64` - Android ARM64
+
+### Termux 编译（Android）
+
+```bash
+chmod +x build-termux.sh
+./build-termux.sh
+```
+
+编译产物：`bin/fingerprint_android_arm64`（Android ARM64 专用）
 
 ## 配置文件
 
@@ -88,7 +130,7 @@ request = {
 }
 
 proc = subprocess.Popen(
-    ["./tlsRequester.exe"],
+    ["./bin/fingerprint_windows_amd64.exe"],  # 或 bin/fingerprint_linux_amd64
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE
@@ -123,7 +165,7 @@ const request = {
   config_path: './config.json'
 };
 
-const proc = spawn('./tlsRequester.exe');
+const proc = spawn('./bin/fingerprint_windows_amd64.exe');  // 或 bin/fingerprint_linux_amd64
 
 proc.stdin.write(JSON.stringify(request));
 proc.stdin.end();
@@ -148,3 +190,16 @@ proc.stderr.on('data', (data) => {
 - ✅ 直接转发响应（不做任何处理）
 - ✅ 子进程调用（语言无关）
 - ✅ 超时控制（连接超时和读取超时）
+- ✅ 模块化架构（易于维护和扩展）
+
+## 开发说明
+
+项目采用标准的 Go 项目结构：
+
+- **cmd/tlsRequester**: 程序入口，处理 stdin/stdout
+- **internal/config**: 配置类型定义和加载
+- **internal/fingerprint**: TLS 指纹构建逻辑
+- **internal/requester**: HTTP 请求和代理处理
+- **internal/utils**: 通用工具函数
+
+详细的重构说明请参考 [REFACTOR.md](REFACTOR.md)

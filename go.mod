@@ -1,4 +1,4 @@
-module tlsRequester
+module fingerPrintRequester
 
 go 1.24
 

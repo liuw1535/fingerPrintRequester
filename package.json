@@ -5,7 +5,7 @@
   "type": "module",
   "main": "requester.js",
   "scripts": {
-    "test": "node test_requester.js"
+    "test": "node test/test_requester.js"
   },
   "keywords": ["tls", "fingerprint", "http", "request"],
   "author": "",

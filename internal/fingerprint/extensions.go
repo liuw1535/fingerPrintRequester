@@ -1,73 +1,16 @@
-package main
+package fingerprint
 
 import (
 	"crypto/rand"
 	"fmt"
+
+	"fingerPrintRequester/internal/config"
+	"fingerPrintRequester/internal/utils"
+
 	utls "github.com/refraction-networking/utls"
 )
 
-var cipherMap = map[string]uint16{
-	"TLS_AES_128_GCM_SHA256":                      utls.TLS_AES_128_GCM_SHA256,
-	"TLS_AES_256_GCM_SHA384":                      utls.TLS_AES_256_GCM_SHA384,
-	"TLS_CHACHA20_POLY1305_SHA256":                utls.TLS_CHACHA20_POLY1305_SHA256,
-	"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256":       utls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-	"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256":     utls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-	"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384":       utls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-	"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384":     utls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256":       utls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-	"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256": utls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-	"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256":   utls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
-	"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA":        utls.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-	"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA":          utls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-	"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA":        utls.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
-	"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA":          utls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-	"TLS_RSA_WITH_AES_128_GCM_SHA256":             utls.TLS_RSA_WITH_AES_128_GCM_SHA256,
-	"TLS_RSA_WITH_AES_256_GCM_SHA384":             utls.TLS_RSA_WITH_AES_256_GCM_SHA384,
-	"TLS_RSA_WITH_AES_128_CBC_SHA":                utls.TLS_RSA_WITH_AES_128_CBC_SHA,
-	"TLS_RSA_WITH_AES_256_CBC_SHA":                utls.TLS_RSA_WITH_AES_256_CBC_SHA,
-}
-
-var curveMap = map[string]utls.CurveID{
-	"X25519":              utls.X25519,
-	"CurveP256":           utls.CurveP256,
-	"CurveP384":           utls.CurveP384,
-	"CurveP521":           utls.CurveP521,
-	"secp256r1":           utls.CurveP256,
-	"secp384r1":           utls.CurveP384,
-	"secp521r1":           utls.CurveP521,
-	"X25519MLKEM768":      utls.CurveID(0x11ec),
-	"SecP256r1MLKEM768":   utls.CurveID(0x11eb),
-	"SecP384r1MLKEM1024":  utls.CurveID(0x11ed),
-}
-
-var signatureAlgorithmMap = map[string]utls.SignatureScheme{
-	"ECDSAWithP256AndSHA256":   utls.ECDSAWithP256AndSHA256,
-	"ECDSAWithP384AndSHA384":   utls.ECDSAWithP384AndSHA384,
-	"ECDSAWithP521AndSHA512":   utls.ECDSAWithP521AndSHA512,
-	"PSSWithSHA256":            utls.PSSWithSHA256,
-	"PSSWithSHA384":            utls.PSSWithSHA384,
-	"PSSWithSHA512":            utls.PSSWithSHA512,
-	"PKCS1WithSHA256":          utls.PKCS1WithSHA256,
-	"PKCS1WithSHA384":          utls.PKCS1WithSHA384,
-	"PKCS1WithSHA512":          utls.PKCS1WithSHA512,
-	"PKCS1WithSHA1":            utls.PKCS1WithSHA1,
-	"ECDSAWithSHA1":            utls.ECDSAWithSHA1,
-	"Ed25519":                  utls.Ed25519,
-	"ecdsa_secp256r1_sha256":   utls.ECDSAWithP256AndSHA256,
-	"ecdsa_secp384r1_sha384":   utls.ECDSAWithP384AndSHA384,
-	"ecdsa_secp521r1_sha512":   utls.ECDSAWithP521AndSHA512,
-	"rsa_pss_rsae_sha256":      utls.PSSWithSHA256,
-	"rsa_pss_rsae_sha384":      utls.PSSWithSHA384,
-	"rsa_pss_rsae_sha512":      utls.PSSWithSHA512,
-	"rsa_pkcs1_sha256":         utls.PKCS1WithSHA256,
-	"rsa_pkcs1_sha384":         utls.PKCS1WithSHA384,
-	"rsa_pkcs1_sha512":         utls.PKCS1WithSHA512,
-	"rsa_pkcs1_sha1":           utls.PKCS1WithSHA1,
-	"ecdsa_sha1":               utls.ECDSAWithSHA1,
-	"ed25519":                  utls.Ed25519,
-}
-
-func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, error) {
+func BuildExtension(cfg config.ExtensionConfig, serverName string) (utls.TLSExtension, error) {
 	switch cfg.Name {
 	case "server_name":
 		return &utls.SNIExtension{ServerName: serverName}, nil
@@ -79,7 +22,7 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 		curves := []utls.CurveID{}
 		if curveNames, ok := cfg.Data["curves"].([]interface{}); ok {
 			for _, name := range curveNames {
-				if curveID, exists := curveMap[name.(string)]; exists {
+				if curveID, exists := CurveMap[name.(string)]; exists {
 					curves = append(curves, curveID)
 				}
 			}
@@ -111,7 +54,7 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 		algorithms := []utls.SignatureScheme{}
 		if algoNames, ok := cfg.Data["algorithms"].([]interface{}); ok {
 			for _, name := range algoNames {
-				if algo, exists := signatureAlgorithmMap[name.(string)]; exists {
+				if algo, exists := SignatureAlgorithmMap[name.(string)]; exists {
 					algorithms = append(algorithms, algo)
 				}
 			}
@@ -121,7 +64,7 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 		algorithms := []utls.SignatureScheme{}
 		if algoNames, ok := cfg.Data["algorithms"].([]interface{}); ok {
 			for _, name := range algoNames {
-				if algo, exists := signatureAlgorithmMap[name.(string)]; exists {
+				if algo, exists := SignatureAlgorithmMap[name.(string)]; exists {
 					algorithms = append(algorithms, algo)
 				}
 			}
@@ -134,14 +77,13 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 		if groupNames, ok := cfg.Data["groups"].([]interface{}); ok {
 			groups = make([]utls.CurveID, 0, len(groupNames))
 			for _, name := range groupNames {
-				if curveID, exists := curveMap[name.(string)]; exists {
+				if curveID, exists := CurveMap[name.(string)]; exists {
 					groups = append(groups, curveID)
 				}
 			}
 		}
 		keyShares := []utls.KeyShare{}
 		for _, group := range groups {
-			// 让 uTLS 自动生成所有曲线的密钥数据
 			keyShares = append(keyShares, utls.KeyShare{Group: group})
 		}
 		return &utls.KeyShareExtension{KeyShares: keyShares}, nil
@@ -159,7 +101,7 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 		if verList, ok := cfg.Data["versions"].([]interface{}); ok {
 			versions = make([]uint16, len(verList))
 			for i, v := range verList {
-				versions[i] = parseHex(v.(string))
+				versions[i] = utils.ParseHex(v.(string))
 			}
 		}
 		return &utls.SupportedVersionsExtension{Versions: versions}, nil
@@ -208,16 +150,14 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 			Identities: []utls.PskIdentity{
 				{
 					Label:               identity,
-					ObfuscatedTicketAge: generateRandomObfuscatedTicketAge(),
+					ObfuscatedTicketAge: utils.GenerateRandomObfuscatedTicketAge(),
 				},
 			},
 			Binders: [][]byte{binder},
 		}, nil
 	case "encrypted_client_hello":
-		// 使用 utls 内置的 GREASE ECH 扩展
 		ext := &utls.GREASEEncryptedClientHelloExtension{}
 		
-		// 可选：配置 cipher suites
 		if cipherSuites, ok := cfg.Data["cipher_suites"].([]interface{}); ok {
 			ext.CandidateCipherSuites = make([]utls.HPKESymmetricCipherSuite, len(cipherSuites))
 			for i, cs := range cipherSuites {
@@ -230,7 +170,6 @@ func buildExtension(cfg ExtensionConfig, serverName string) (utls.TLSExtension, 
 			}
 		}
 		
-		// 可选：配置 payload 长度
 		if payloadLens, ok := cfg.Data["payload_lengths"].([]interface{}); ok {
 			ext.CandidatePayloadLens = make([]uint16, len(payloadLens))
 			for i, l := range payloadLens {

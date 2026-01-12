@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"fingerPrintRequester/internal/config"
+	"fingerPrintRequester/internal/requester"
 )
 
 func main() {
@@ -15,14 +18,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	var req Request
+	var req config.Request
 	if err := json.Unmarshal(input, &req); err != nil {
 		outputError(fmt.Sprintf("failed to parse request: %v", err))
 		os.Exit(1)
 	}
 
 	// Load config
-	cfg, err := LoadConfig(req.ConfigPath)
+	cfg, err := config.LoadConfig(req.ConfigPath)
 	if err != nil {
 		outputError(fmt.Sprintf("failed to load config: %v", err))
 		os.Exit(1)
@@ -42,7 +45,7 @@ func main() {
 	}
 
 	// Make request
-	if err := MakeRequest(&req, cfg); err != nil {
+	if err := requester.MakeRequest(&req, cfg); err != nil {
 		outputError(fmt.Sprintf("request failed: %v", err))
 		os.Exit(1)
 	}

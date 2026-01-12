@@ -1,9 +1,4 @@
-package main
-
-import (
-	"encoding/json"
-	"os"
-)
+package config
 
 type Config struct {
 	Timeout     TimeoutConfig     `json:"timeout"`
@@ -45,16 +40,4 @@ type Request struct {
 	ConfigPath string            `json:"config_path"`
 	Timeout    *TimeoutConfig    `json:"timeout,omitempty"`
 	Proxy      *ProxyConfig      `json:"proxy,omitempty"`
-}
-
-func LoadConfig(path string) (*Config, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var cfg Config
-	if err := json.Unmarshal(data, &cfg); err != nil {
-		return nil, err
-	}
-	return &cfg, nil
 }
