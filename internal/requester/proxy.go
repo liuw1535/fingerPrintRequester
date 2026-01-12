@@ -2,6 +2,7 @@ package requester
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -14,9 +15,34 @@ import (
 )
 
 func DialWithProxy(addr string, cfg *config.Config) (net.Conn, error) {
-	var dialer proxy.Dialer = &net.Dialer{
+	baseDialer := &net.Dialer{
 		Timeout: time.Duration(cfg.Timeout.Connect) * time.Second,
 	}
+
+	// Custom DNS resolver with fallback to system DNS
+	if len(cfg.DNS.Servers) > 0 {
+		baseDialer.Resolver = &net.Resolver{
+			PreferGo: true,
+			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+				for _, server := range cfg.DNS.Servers {
+					d := net.Dialer{
+						Timeout: time.Duration(cfg.Timeout.Connect) * time.Second,
+					}
+					conn, err := d.DialContext(ctx, "udp", server)
+					if err == nil {
+						return conn, nil
+					}
+				}
+				// Fallback to system DNS
+				d := net.Dialer{
+					Timeout: time.Duration(cfg.Timeout.Connect) * time.Second,
+				}
+				return d.DialContext(ctx, network, address)
+			},
+		}
+	}
+
+	var dialer proxy.Dialer = baseDialer
 
 	if cfg.Proxy.Enabled {
 		proxyURL, err := url.Parse(cfg.Proxy.URL)

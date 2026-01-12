@@ -103,6 +103,7 @@ class FingerprintRequester {
       let headerBuffer = '';
       let bodyChunks = [];
       let totalLoaded = 0;
+      let stderrData = '';
 
       const timeoutId = setTimeout(() => {
         proc.kill();
@@ -182,15 +183,25 @@ class FingerprintRequester {
       });
 
       proc.stderr.on('data', (chunk) => {
-        // Ignore stderr for now
+        stderrData += chunk.toString();
       });
 
       proc.on('close', (code) => {
         clearTimeout(timeoutId);
 
         if (code !== 0) {
-          const error = new Error(`Process exited with code ${code}`);
-          error.code = 'ERR_PROCESS_EXIT';
+          let errorInfo = { error: `Process exited with code ${code}`, error_type: 'UNKNOWN_ERROR' };
+          if (stderrData) {
+            try {
+              errorInfo = JSON.parse(stderrData);
+            } catch (e) {
+              errorInfo.error = stderrData;
+            }
+          }
+          const error = new Error(errorInfo.error);
+          error.code = code === 3 ? 'ECONNABORTED' : code === 4 ? 'ERR_CONFIG' : 'ERR_NETWORK';
+          error.errorType = errorInfo.error_type;
+          error.exitCode = code;
           error.config = config;
           return reject(error);
         }

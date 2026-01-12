@@ -3,6 +3,7 @@ package config
 type Config struct {
 	Timeout     TimeoutConfig     `json:"timeout"`
 	Proxy       ProxyConfig       `json:"proxy"`
+	DNS         DNSConfig         `json:"dns"`
 	Fingerprint FingerprintConfig `json:"fingerprint"`
 }
 
@@ -15,6 +16,10 @@ type ProxyConfig struct {
 	Enabled bool   `json:"enabled"`
 	Type    string `json:"type"`
 	URL     string `json:"url"`
+}
+
+type DNSConfig struct {
+	Servers []string `json:"servers"`
 }
 
 type FingerprintConfig struct {
@@ -40,4 +45,5 @@ type Request struct {
 	ConfigPath string            `json:"config_path"`
 	Timeout    *TimeoutConfig    `json:"timeout,omitempty"`
 	Proxy      *ProxyConfig      `json:"proxy,omitempty"`
+	DNS        *DNSConfig        `json:"dns,omitempty"`
 }
