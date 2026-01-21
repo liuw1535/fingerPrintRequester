@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Create requester instance
 const requester = create({
-  configPath: join(__dirname, '../config-chrome141.json'),
+  configPath: join(__dirname, '../config.json'),
   timeout: 30000,
 });
 

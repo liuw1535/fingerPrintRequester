@@ -33,7 +33,7 @@ const requester = create({
   binDir: './bin',                    // Binary directory (default: './bin')
   binaryPath: './custom/path/binary', // Manual binary path (optional)
   configPath: './config.json',        // TLS config file (default: './config.json')
-  timeout: 30000,                     // Default timeout in ms (default: 30000)
+  timeout: 30,                        // Default timeout in seconds (default: 30)
 });
 ```
 
@@ -122,7 +122,7 @@ const response = await requester.get('https://api.example.com', {
 ### With Timeout
 ```javascript
 const response = await requester.get('https://api.example.com', {
-  timeout: 5000 // 5 seconds
+  timeout: 5 // 5 seconds
 });
 ```
 

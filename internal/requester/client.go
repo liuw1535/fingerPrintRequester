@@ -43,11 +43,9 @@ func MakeRequest(req *config.Request, cfg *config.Config) error {
 		return err
 	}
 
-	// Apply read timeout for handshake
-	conn.SetReadDeadline(time.Now().Add(time.Duration(cfg.Timeout.Read) * time.Second))
-
-	// TLS handshake
+	// TLS handshake with timeout
 	if parsedURL.Scheme == "https" {
+		conn.SetReadDeadline(time.Now().Add(time.Duration(cfg.Timeout.Read) * time.Second))
 		tlsConfig := &utls.Config{
 			ServerName:         parsedURL.Hostname(),
 			InsecureSkipVerify: true,
@@ -63,6 +61,10 @@ func MakeRequest(req *config.Request, cfg *config.Config) error {
 		}
 		conn = uConn
 	}
+
+	// Clear all timeouts for streaming
+	conn.SetReadDeadline(time.Time{})
+	conn.SetWriteDeadline(time.Time{})
 
 	// Send HTTP request
 	httpReq, err := http.NewRequest(req.Method, req.URL, strings.NewReader(req.Body))

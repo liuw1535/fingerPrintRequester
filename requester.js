@@ -12,9 +12,10 @@ class FingerprintRequester {
     this.binaryPath = options.binaryPath || this._detectBinary();
     this.configPath = options.configPath || join(__dirname, 'config.json');
     this.defaults = {
-      timeout: options.timeout || 30000,
+      timeout: options.timeout || 30, // seconds
       proxy: options.proxy || null,
     };
+    this.activeProcesses = new Set();
   }
 
   _detectBinary() {
@@ -74,12 +75,12 @@ class FingerprintRequester {
       config_path: this.configPath,
     };
 
-    // Add timeout if specified
-    const timeoutMs = timeout || this.defaults.timeout;
-    if (timeoutMs) {
+    // Add timeout if specified (in seconds)
+    const timeoutSec = timeout || this.defaults.timeout;
+    if (timeoutSec) {
       requestPayload.timeout = {
-        connect: Math.ceil(timeoutMs / 1000),
-        read: Math.ceil(timeoutMs / 1000),
+        connect: timeoutSec,
+        read: timeoutSec,
       };
     }
 
@@ -96,6 +97,7 @@ class FingerprintRequester {
 
     return new Promise((resolve, reject) => {
       const proc = spawn(this.binaryPath);
+      this.activeProcesses.add(proc);
       let headersParsed = false;
       let responseHeaders = {};
       let responseStatus = 200;
@@ -111,7 +113,7 @@ class FingerprintRequester {
         error.code = 'ECONNABORTED';
         error.config = config;
         reject(error);
-      }, timeoutMs);
+      }, timeoutSec * 1000);
 
       // Support request cancellation
       if (signal) {
@@ -146,6 +148,9 @@ class FingerprintRequester {
             }
             
             headersParsed = true;
+            
+            // Clear timeout for streaming responses
+            clearTimeout(timeoutId);
             
             // 先调用 validateStatus 让外部知道状态码
             if (validateStatus) {
@@ -188,6 +193,7 @@ class FingerprintRequester {
 
       proc.on('close', (code) => {
         clearTimeout(timeoutId);
+        this.activeProcesses.delete(proc);
 
         if (code !== 0) {
           let errorInfo = { error: `Process exited with code ${code}`, error_type: 'UNKNOWN_ERROR' };
@@ -287,6 +293,11 @@ class FingerprintRequester {
       ...config,
       onDownloadProgress: onProgress || (() => {}),
     });
+  }
+
+  close() {
+    this.activeProcesses.forEach(proc => proc.kill());
+    this.activeProcesses.clear();
   }
 }
 

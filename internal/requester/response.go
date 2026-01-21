@@ -6,20 +6,10 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"time"
-
-	utls "github.com/refraction-networking/utls"
 )
 
 func ForwardResponse(resp *http.Response, conn net.Conn) error {
 	defer conn.Close()
-	
-	// Cancel read timeout for streaming
-	if tcpConn, ok := conn.(*net.TCPConn); ok {
-		tcpConn.SetReadDeadline(time.Time{})
-	} else if utlsConn, ok := conn.(*utls.UConn); ok {
-		utlsConn.SetReadDeadline(time.Time{})
-	}
 
 	// Write status line
 	fmt.Fprintf(os.Stdout, "HTTP/%d.%d %s\r\n", resp.ProtoMajor, resp.ProtoMinor, resp.Status)
