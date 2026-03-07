@@ -1,0 +1,159 @@
+{
+  "timeout": {
+    "connect": 30,
+    "read": 60
+  },
+  "proxy": {
+    "enabled": false,
+    "type": "http",
+    "url": "http://127.0.0.1:7890"
+  },
+  "fingerprint": {
+    "tls_version_min": "0x0303",
+    "tls_version_max": "0x0304",
+    "http2": true,
+    "grease": false,
+    "ciphers": [
+      "TLS_AES_256_GCM_SHA384",
+      "TLS_CHACHA20_POLY1305_SHA256",
+      "TLS_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+      "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+      "TLS_DHE_RSA_WITH_AES_128_CBC_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+      "TLS_DHE_RSA_WITH_AES_256_CBC_SHA256",
+      "TLS_DHE_DSS_WITH_AES_256_GCM_SHA384",
+      "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_CCM",
+      "TLS_DHE_RSA_WITH_AES_256_CCM",
+      "TLS_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384",
+      "TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384",
+      "TLS_DHE_RSA_WITH_ARIA_256_GCM_SHA384",
+      "TLS_DHE_DSS_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CCM",
+      "TLS_DHE_RSA_WITH_AES_128_CCM",
+      "TLS_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256",
+      "TLS_DHE_DSS_WITH_ARIA_128_GCM_SHA256",
+      "TLS_DHE_RSA_WITH_ARIA_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+      "TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+      "TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+      "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
+      "TLS_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_RSA_WITH_AES_256_CCM",
+      "TLS_RSA_WITH_ARIA_256_GCM_SHA384",
+      "TLS_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_RSA_WITH_AES_128_CCM",
+      "TLS_RSA_WITH_ARIA_128_GCM_SHA256",
+      "TLS_RSA_WITH_AES_256_CBC_SHA256",
+      "TLS_RSA_WITH_AES_128_CBC_SHA256",
+      "TLS_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_RSA_WITH_AES_128_CBC_SHA"
+    ],
+    "compression_methods": [0],
+    "extensions": [
+      {
+        "name": "renegotiation_info"
+      },
+      {
+        "name": "server_name"
+      },
+      {
+        "name": "ec_point_formats",
+        "data": {
+          "formats": [0, 1, 2]
+        }
+      },
+      {
+        "name": "supported_groups",
+        "data": {
+          "curves": ["X25519MLKEM768", "x25519", "secp256r1", "x448", "secp384r1", "secp521r1", "ffdhe2048", "ffdhe3072"]
+        }
+      },
+      {
+        "name": "session_ticket"
+      },
+      {
+        "name": "encrypt_then_mac"
+      },
+      {
+        "name": "extended_master_secret"
+      },
+      {
+        "name": "signature_algorithms",
+        "data": {
+          "algorithms": [
+            "mldsa44",
+            "mldsa65",
+            "mldsa44_rsa2048",
+            "ecdsa_secp256r1_sha256",
+            "ecdsa_secp384r1_sha384",
+            "ecdsa_secp521r1_sha512",
+            "ed25519",
+            "ed448",
+            "ecdsa_brainpoolP256r1tls13_sha256",
+            "ecdsa_brainpoolP384r1tls13_sha384",
+            "ecdsa_brainpoolP512r1tls13_sha512",
+            "rsa_pss_pss_sha256",
+            "rsa_pss_pss_sha384",
+            "rsa_pss_pss_sha512",
+            "rsa_pss_rsae_sha256",
+            "rsa_pss_rsae_sha384",
+            "rsa_pss_rsae_sha512",
+            "rsa_pkcs1_sha256",
+            "rsa_pkcs1_sha384",
+            "rsa_pkcs1_sha512",
+            "sha224_ecdsa",
+            "sha224_rsa",
+            "sha224_dsa",
+            "sha256_dsa",
+            "sha384_dsa",
+            "sha512_dsa"
+          ]
+        }
+      },
+      {
+        "name": "supported_versions",
+        "data": {
+          "versions": ["0x0304", "0x0303"]
+        }
+      },
+      {
+        "name": "psk_key_exchange_modes",
+        "data": {
+          "modes": [1]
+        }
+      },
+      {
+        "name": "key_share",
+        "data": {
+          "groups": ["X25519MLKEM768", "x25519"]
+        }
+      },
+      {
+        "name": "pre_shared_key",
+        "data": {
+          "identity_length": 138,
+          "binder_length": 32
+        }
+      }
+    ]
+  }
+}

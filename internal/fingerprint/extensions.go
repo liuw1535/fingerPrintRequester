@@ -16,6 +16,9 @@ func BuildExtension(cfg config.ExtensionConfig, serverName string) (utls.TLSExte
 		return &utls.SNIExtension{ServerName: serverName}, nil
 	case "extended_master_secret":
 		return &utls.UtlsExtendedMasterSecretExtension{}, nil
+	case "encrypt_then_mac":
+		// Extension type 22 (0x0016) - Encrypt-then-MAC
+		return &utls.GenericExtension{Id: 22, Data: []byte{}}, nil
 	case "renegotiation_info":
 		return &utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient}, nil
 	case "supported_groups":

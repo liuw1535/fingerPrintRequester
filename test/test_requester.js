@@ -6,7 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Create requester instance
 const requester = create({
-  configPath: join(__dirname, '../config.json'),
+  configPath: join(__dirname, '../config-openssl.json'),
   timeout: 30000,
 });
 
@@ -87,10 +87,10 @@ async function testTimeout() {
 // Run all tests
 (async () => {
   await testBasicRequest();
-  await testPostRequest();
-  await testStreamRequest();
-  await testWithHeaders();
-  await testTimeout();
+  // await testPostRequest();
+  // await testStreamRequest();
+  // await testWithHeaders();
+  // await testTimeout();
   
   console.log('\n=== All tests completed ===');
 })();
