@@ -43,6 +43,7 @@ func MakeRequest(req *config.Request, cfg *config.Config) error {
 		return err
 	}
 
+	var negotiatedProtocol string
 	// TLS handshake with timeout
 	if parsedURL.Scheme == "https" {
 		conn.SetReadDeadline(time.Now().Add(time.Duration(cfg.Timeout.Read) * time.Second))
@@ -59,6 +60,9 @@ func MakeRequest(req *config.Request, cfg *config.Config) error {
 			conn.Close()
 			return err
 		}
+		
+		// Get negotiated protocol from ALPN
+		negotiatedProtocol = uConn.ConnectionState().NegotiatedProtocol
 		conn = uConn
 	}
 
@@ -76,13 +80,18 @@ func MakeRequest(req *config.Request, cfg *config.Config) error {
 		httpReq.Header.Set(k, v)
 	}
 
-	if cfg.Fingerprint.HTTP2 {
+	// Check if HTTP/2 should be used based on config AND ALPN negotiation
+	// Only use HTTP/2 if it's enabled in config AND server negotiated "h2" via ALPN
+	useHTTP2 := cfg.Fingerprint.HTTP2 && negotiatedProtocol == "h2"
+	
+	if useHTTP2 {
 		// Use HTTP/2
 		transport := &http2.Transport{
 			DialTLS: func(network, addr string, cfg *tls.Config) (net.Conn, error) {
 				return conn, nil
 			},
-			AllowHTTP: true,
+			// Don't allow fallback to HTTP/1.1 if we expect HTTP/2
+			AllowHTTP: false,
 		}
 		client := &http.Client{Transport: transport}
 		resp, err := client.Do(httpReq)
